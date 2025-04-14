@@ -1,4 +1,6 @@
-# PowerDNS WebUI
+![](img/powerdns.webp)
+
+Simple Web UI
 
 ## Configuration
 
