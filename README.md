@@ -3,13 +3,9 @@
 ## Configuration
 
 ```bash
-vi config.json
-```
-
-```json
-{
-    "powerdns_url": "http://localhost:8081",
-    "api_key": "xxxxxx",
-    "server_id": "localhost"
-}
+vi config.toml
+...
+powerdns_url = "http:///localhost:8081"
+api_key = "my_awesome_api_key"
+server_id = "localhost"
 ```
