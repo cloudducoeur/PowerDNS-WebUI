@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/cloudducoeur/PowerDNS-WebUI/pkg/powerdns"
@@ -14,7 +13,7 @@ var powerDNSClient *powerdns.PowerDNSClient
 func main() {
 	app := &cli.App{
 		Name:  "PowerDNS-WebUI",
-		Usage: "A web UI for read PowerDNS zones",
+		Usage: "A web UI for reading PowerDNS zones",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "config",
@@ -65,11 +64,7 @@ func main() {
 			powerDNSClient = powerdns.NewPowerDNSClient(config.PowerDNSURL, config.APIKey, config.ServerID)
 
 			port := c.String("port")
-			http.HandleFunc("/", listZonesHandler)
-			http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-
-			log.Printf("Server started on port %s", port)
-			return http.ListenAndServe(":"+port, nil)
+			return StartServer(port)
 		},
 	}
 
