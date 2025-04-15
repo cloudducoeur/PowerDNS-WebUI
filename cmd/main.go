@@ -21,44 +21,15 @@ func main() {
 				EnvVars:  []string{"CONFIG_FILE"},
 				Required: false,
 			},
-			&cli.StringFlag{
-				Name:     "powerdns-url",
-				Usage:    "PowerDNS API URL",
-				EnvVars:  []string{"POWERDNS_URL"},
-				Required: false,
-			},
-			&cli.StringFlag{
-				Name:     "api-key",
-				Usage:    "PowerDNS API key",
-				EnvVars:  []string{"API_KEY"},
-				Required: false,
-			},
-			&cli.StringFlag{
-				Name:     "server-id",
-				Usage:    "PowerDNS server ID",
-				EnvVars:  []string{"SERVER_ID"},
-				Required: false,
-			},
-			&cli.StringFlag{
-				Name:     "port",
-				Usage:    "Port to run the server on",
-				Value:    "8080",
-				EnvVars:  []string{"PORT"},
-				Required: false,
-			},
 		},
 		Action: func(c *cli.Context) error {
 			configFile := c.String("config")
 			if configFile != "" {
 				loadConfigFromFile(configFile)
-			} else {
-				config.PowerDNSURL = c.String("powerdns-url")
-				config.APIKey = c.String("api-key")
-				config.ServerID = c.String("server-id")
 			}
 
 			if config.PowerDNSURL == "" || config.APIKey == "" || config.ServerID == "" {
-				log.Fatal("Missing required configuration: powerdns-url, api-key, and server-id must be provided")
+				log.Fatal("Missing required configuration: powerdns_url, api_key, and server_id must be provided")
 			}
 
 			// Initialize the PowerDNS client
@@ -68,8 +39,7 @@ func main() {
 			handlers.SetPowerDNSClient(powerDNSClient)
 
 			// Start the server
-			port := c.String("port")
-			return server.StartServer(port)
+			return server.StartServer(config.ListenAddress, config.Port)
 		},
 	}
 

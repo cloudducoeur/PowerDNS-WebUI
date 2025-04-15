@@ -48,10 +48,6 @@ To run the application, use the following command:
 ```bash
 GLOBAL OPTIONS:
    --config value        Path to the configuration file (TOML format) [$CONFIG_FILE]
-   --powerdns-url value  PowerDNS API URL [$POWERDNS_URL]
-   --api-key value       PowerDNS API key [$API_KEY]
-   --server-id value     PowerDNS server ID [$SERVER_ID]
-   --port value          Port to run the server on (default: "8080") [$PORT]
    --help, -h            show help
 ```
 
@@ -63,6 +59,8 @@ Create a `config.toml` file with the following content:
 powerdns_url = "http://localhost:8081"
 api_key = "my_awesome_api_key"
 server_id = "localhost"
+listen_address = "0.0.0.0"
+port = "8080"
 ```
 
 ## Development

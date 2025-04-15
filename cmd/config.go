@@ -7,9 +7,11 @@ import (
 )
 
 type Config struct {
-	PowerDNSURL string `toml:"powerdns_url"`
-	APIKey      string `toml:"api_key"`
-	ServerID    string `toml:"server_id"`
+	PowerDNSURL   string `toml:"powerdns_url"`
+	APIKey        string `toml:"api_key"`
+	ServerID      string `toml:"server_id"`
+	ListenAddress string `toml:"listen_address"`
+	Port          string `toml:"port"`
 }
 
 var config Config
