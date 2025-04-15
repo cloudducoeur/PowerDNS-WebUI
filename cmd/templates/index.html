@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerDNS Web UI</title>
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    >
+    <style>
+        .control {
+            margin-right: 5px;
+        }
+        footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">PowerDNS WebUI</h1>
+
+            <div class="field is-grouped">
+                <form method="get" action="/" class="is-flex">
+                    <div class="control">
+                        <input class="input" type="text" name="q" value="{{.Query}}" placeholder="Search...">
+                    </div>
+                    <div class="control">
+                        <div class="select">
+                            <select name="type">
+                                <option value="all">All fields</option>
+                                <option value="name">Name</option>
+                                <option value="content">Value</option>
+                                <option value="type">Type</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-info">Search</button>
+                    </div>
+                    {{if .Query}}
+                        <div class="control">
+                            <a href="/" class="button is-light">Clear</a>
+                        </div>
+                    {{end}}
+                </form>
+            </div>
+
+            {{ if .Error }}
+                <div class="notification is-danger">{{ .Error }}</div>
+            {{ end }}
+
+            {{ range .Zones }}
+                <div class="box">
+                    <h2 class="subtitle">{{ .Name }}</h2>
+                    <p>Type: {{ .Kind }} | DNSSEC: {{ .DNSSec }} | Serial: {{ .Serial }}</p>
+
+                    <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Value</th>
+                                <th>TTL</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{ range .Records }}
+                                <tr>
+                                    <td>{{ .Name }}</td>
+                                    <td>{{ .Type }}</td>
+                                    <td class="content-cell">{{ .Content }}</td>
+                                    <td>{{ .TTL }}</td>
+                                    <td>{{ if .Disabled }}Disabled{{ else }}Enabled{{ end }}</td>
+                                </tr>
+                            {{ end }}
+                        </tbody>
+                    </table>
+                </div>
+            {{ else }}
+                <p>No zones found</p>
+            {{ end }}
+        </div>
+    </section>
+
+    <footer>
+        <p>Developed by the Infrastructure Team of Cloud du Coeur</p>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
