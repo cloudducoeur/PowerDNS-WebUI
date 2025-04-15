@@ -4,6 +4,8 @@
 
 **PowerDNS-WebUI** is a web user interface for reading and searching DNS zones managed by a PowerDNS server via its REST API.
 
+![](img/capture.png)
+
 ## Features
 
 - Display DNS zones and their records.
