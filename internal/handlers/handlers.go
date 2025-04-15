@@ -1,4 +1,4 @@
-package main
+package handlers
 
 import (
 	"net/http"
@@ -7,13 +7,20 @@ import (
 	"github.com/cloudducoeur/PowerDNS-WebUI/pkg/powerdns"
 )
 
-func listZonesHandler(w http.ResponseWriter, r *http.Request) {
+var powerDNSClient *powerdns.PowerDNSClient
+
+// SetPowerDNSClient sets the PowerDNS client for handlers.
+func SetPowerDNSClient(client *powerdns.PowerDNSClient) {
+	powerDNSClient = client
+}
+
+func ListZonesHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("q")
 	searchType := r.URL.Query().Get("type")
 
 	zones, err := powerDNSClient.FetchZones()
 	if err != nil {
-		renderError(w, "Error fetching zones", err)
+		RenderError(w, "Error fetching zones", err)
 		return
 	}
 
@@ -36,7 +43,7 @@ func listZonesHandler(w http.ResponseWriter, r *http.Request) {
 		Query: query,
 	}
 
-	renderTemplate(w, "index.html", data)
+	RenderTemplate(w, "index.html", data)
 }
 
 func filterRecords(records []powerdns.DNSRecord, query, searchType string) []powerdns.DNSRecord {

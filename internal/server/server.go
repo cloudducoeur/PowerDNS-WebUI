@@ -1,13 +1,14 @@
-package main
+package server
 
 import (
 	"log"
 	"net/http"
+
+	"github.com/cloudducoeur/PowerDNS-WebUI/internal/handlers"
 )
 
-// StartServer initializes and starts the HTTP server.
 func StartServer(port string) error {
-	http.HandleFunc("/", listZonesHandler)
+	http.HandleFunc("/", handlers.ListZonesHandler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	log.Printf("Server started on port %s", port)
