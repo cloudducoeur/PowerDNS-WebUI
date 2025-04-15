@@ -14,8 +14,8 @@ type Config struct {
 
 var config Config
 
-func loadConfig() {
-	if _, err := toml.DecodeFile("config.toml", &config); err != nil {
+func loadConfigFromFile(filePath string) {
+	if _, err := toml.DecodeFile(filePath, &config); err != nil {
 		log.Fatalf("Error reading configuration file: %v", err)
 	}
 }

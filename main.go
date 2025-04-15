@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/BurntSushi/toml"
 	"github.com/cloudducoeur/PowerDNS-WebUI/pkg/powerdns"
 	"github.com/urfave/cli/v2"
 )
@@ -76,11 +75,5 @@ func main() {
 
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
-	}
-}
-
-func loadConfigFromFile(filePath string) {
-	if _, err := toml.DecodeFile(filePath, &config); err != nil {
-		log.Fatalf("Error reading configuration file: %v", err)
 	}
 }
