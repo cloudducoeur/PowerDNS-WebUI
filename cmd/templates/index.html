@@ -16,15 +16,26 @@
         footer {
             margin-top: 50px;
             padding: 20px 0;
-            background-color: #f5f5f5;
+            background-color: #e74987;
             text-align: center;
+        }
+        .button.is-danger {
+            background-color: #e74987; /* Couleur rose */
+            border-color: #e74987;
+            color: white;
+        }
+        .button.is-danger:hover {
+            background-color: #e74987; /* Couleur rose clair au survol */
+            border-color: #e74987;
         }
     </style>
 </head>
 <body>
     <section class="section">
         <div class="container">
-            <h1 class="title">PowerDNS WebUI</h1>
+            <div class="container">
+                <img src="/static/powerdns.png" alt="PowerDNS WebUI" style="width: 40%;">
+            </div>
 
             <div class="field is-grouped">
                 <form method="get" action="/" class="is-flex">
@@ -42,7 +53,7 @@
                         </div>
                     </div>
                     <div class="control">
-                        <button type="submit" class="button is-info">Search</button>
+                        <button type="submit" class="button is-danger">Search</button>
                     </div>
                     {{if .Query}}
                         <div class="control">
