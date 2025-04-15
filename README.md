@@ -83,20 +83,6 @@ To run unit tests:
 make test
 ```
 
-## Project Structure
-
-```
-.
-├── config.go          # Configuration management
-├── handlers.go        # HTTP route handlers
-├── main.go            # Main entry point
-├── pkg/
-│   └── powerdns/      # PowerDNS client
-├── templates/         # HTML files for the user interface
-├── Makefile           # Task automation
-└── README.md          # Documentation
-```
-
 ## Contribution
 
 Contributions are welcome! Please submit a pull request or open an issue to report a problem or suggest an improvement.
