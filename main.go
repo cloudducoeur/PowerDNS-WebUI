@@ -1,44 +1,82 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/BurntSushi/toml"
 	"github.com/cloudducoeur/PowerDNS-WebUI/pkg/powerdns"
+	"github.com/urfave/cli/v2"
 )
 
 var powerDNSClient *powerdns.PowerDNSClient
 
 func main() {
-	configFile := flag.String("config", "", "Path to the configuration file (TOML format)")
-	powerDNSURL := flag.String("powerdns-url", "", "PowerDNS API URL")
-	apiKey := flag.String("api-key", "", "PowerDNS API key")
-	serverID := flag.String("server-id", "", "PowerDNS server ID")
-	port := flag.String("port", "8080", "Port to run the server on")
+	app := &cli.App{
+		Name:  "PowerDNS-WebUI",
+		Usage: "A web UI for read PowerDNS zones",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:     "config",
+				Usage:    "Path to the configuration file (TOML format)",
+				EnvVars:  []string{"CONFIG_FILE"},
+				Required: false,
+			},
+			&cli.StringFlag{
+				Name:     "powerdns-url",
+				Usage:    "PowerDNS API URL",
+				EnvVars:  []string{"POWERDNS_URL"},
+				Required: false,
+			},
+			&cli.StringFlag{
+				Name:     "api-key",
+				Usage:    "PowerDNS API key",
+				EnvVars:  []string{"API_KEY"},
+				Required: false,
+			},
+			&cli.StringFlag{
+				Name:     "server-id",
+				Usage:    "PowerDNS server ID",
+				EnvVars:  []string{"SERVER_ID"},
+				Required: false,
+			},
+			&cli.StringFlag{
+				Name:     "port",
+				Usage:    "Port to run the server on",
+				Value:    "8080",
+				EnvVars:  []string{"PORT"},
+				Required: false,
+			},
+		},
+		Action: func(c *cli.Context) error {
+			configFile := c.String("config")
+			if configFile != "" {
+				loadConfigFromFile(configFile)
+			} else {
+				config.PowerDNSURL = c.String("powerdns-url")
+				config.APIKey = c.String("api-key")
+				config.ServerID = c.String("server-id")
+			}
 
-	flag.Parse()
+			if config.PowerDNSURL == "" || config.APIKey == "" || config.ServerID == "" {
+				log.Fatal("Missing required configuration: powerdns-url, api-key, and server-id must be provided")
+			}
 
-	if *configFile != "" {
-		loadConfigFromFile(*configFile)
-	} else {
-		config.PowerDNSURL = *powerDNSURL
-		config.APIKey = *apiKey
-		config.ServerID = *serverID
+			powerDNSClient = powerdns.NewPowerDNSClient(config.PowerDNSURL, config.APIKey, config.ServerID)
+
+			port := c.String("port")
+			http.HandleFunc("/", listZonesHandler)
+			http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+			log.Printf("Server started on port %s", port)
+			return http.ListenAndServe(":"+port, nil)
+		},
 	}
 
-	if config.PowerDNSURL == "" || config.APIKey == "" || config.ServerID == "" {
-		log.Fatal("Missing required configuration: powerdns-url, api-key, and server-id must be provided")
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
 	}
-
-	powerDNSClient = powerdns.NewPowerDNSClient(config.PowerDNSURL, config.APIKey, config.ServerID)
-
-	http.HandleFunc("/", listZonesHandler)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-
-	log.Printf("Server started on port %s", *port)
-	log.Fatal(http.ListenAndServe(":"+*port, nil))
 }
 
 func loadConfigFromFile(filePath string) {
