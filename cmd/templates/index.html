@@ -28,9 +28,21 @@
             background-color: #e74987;
             border-color: #e74987;
         }
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
     </style>
 </head>
 <body>
+    <!-- Logout Button -->
+    <div class="logout-button">
+        <form method="POST" action="/logout">
+            <button type="submit" class="button is-danger">Logout</button>
+        </form>
+    </div>
+
     <section class="section">
         <div class="container">
             <div class="container">
