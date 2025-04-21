@@ -6,7 +6,6 @@ import (
 	"net/http"
 )
 
-// DNSRecord représente un enregistrement DNS.
 type DNSRecord struct {
 	Name     string `json:"name"`
 	Type     string `json:"type"`
@@ -15,7 +14,6 @@ type DNSRecord struct {
 	Disabled bool   `json:"disabled"`
 }
 
-// Zone représente une zone DNS.
 type Zone struct {
 	ID             string      `json:"id"`
 	Name           string      `json:"name"`
@@ -28,7 +26,6 @@ type Zone struct {
 	NotifiedSerial int         `json:"notified_serial"`
 }
 
-// PowerDNSClient est un client pour interagir avec l'API PowerDNS.
 type PowerDNSClient struct {
 	BaseURL  string
 	APIKey   string
@@ -36,7 +33,15 @@ type PowerDNSClient struct {
 	Client   *http.Client
 }
 
-// NewPowerDNSClient crée une nouvelle instance de PowerDNSClient.
+// NewPowerDNSClient creates a new instance of PowerDNSClient.
+//
+// Parameters:
+// - baseURL: The base URL of the PowerDNS API.
+// - apiKey: The API key used for authentication with the PowerDNS API.
+// - serverID: The ID of the PowerDNS server to interact with.
+//
+// Returns:
+// - A pointer to a new PowerDNSClient instance configured with the provided parameters.
 func NewPowerDNSClient(baseURL, apiKey, serverID string) *PowerDNSClient {
 	return &PowerDNSClient{
 		BaseURL:  baseURL,
@@ -46,7 +51,15 @@ func NewPowerDNSClient(baseURL, apiKey, serverID string) *PowerDNSClient {
 	}
 }
 
-// FetchZones récupère toutes les zones DNS.
+// FetchZones retrieves all DNS zones from the PowerDNS API.
+//
+// Behavior:
+// - Sends a GET request to the PowerDNS API to fetch the list of zones.
+// - For each zone, fetches its DNS records using the FetchRecords method.
+//
+// Returns:
+// - A slice of Zone structs containing the retrieved zones and their records.
+// - An error if the API request fails, the response status is not OK, or the response cannot be decoded.
 func (c *PowerDNSClient) FetchZones() ([]Zone, error) {
 	url := fmt.Sprintf("%s/api/v1/servers/%s/zones", c.BaseURL, c.ServerID)
 
@@ -77,7 +90,18 @@ func (c *PowerDNSClient) FetchZones() ([]Zone, error) {
 	return zones, nil
 }
 
-// FetchRecords récupère les enregistrements DNS pour une zone donnée.
+// FetchRecords retrieves DNS records for a given zone.
+//
+// Parameters:
+// - zoneID: The ID of the zone for which to fetch DNS records.
+//
+// Behavior:
+// - Sends a GET request to the PowerDNS API to fetch the records of the specified zone.
+// - Decodes the response into a slice of DNSRecord structs.
+//
+// Returns:
+// - A slice of DNSRecord structs containing the retrieved records.
+// - An error if the API request fails, the response status is not OK, or the response cannot be decoded.
 func (c *PowerDNSClient) FetchRecords(zoneID string) ([]DNSRecord, error) {
 	url := fmt.Sprintf("%s/api/v1/servers/%s/zones/%s", c.BaseURL, c.ServerID, zoneID)
 
@@ -124,7 +148,21 @@ func (c *PowerDNSClient) FetchRecords(zoneID string) ([]DNSRecord, error) {
 	return records, nil
 }
 
-// makeRequest est une méthode utilitaire pour effectuer des requêtes HTTP.
+// makeRequest is a utility method for making HTTP requests.
+//
+// Parameters:
+// - method: The HTTP method to use (e.g., "GET", "POST").
+// - url: The URL to send the request to.
+// - body: The request body (optional, can be nil).
+//
+// Behavior:
+// - Creates an HTTP request with the specified method, URL, and body.
+// - Adds the API key and content type headers to the request.
+// - Sends the request using the HTTP client.
+//
+// Returns:
+// - The HTTP response from the server.
+// - An error if the request creation or execution fails.
 func (c *PowerDNSClient) makeRequest(method, url string, body interface{}) (*http.Response, error) {
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
